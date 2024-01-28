@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Dashboard - Chat App</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <!-- Optional: Add your custom styles here -->
+    <style>
+      body {
+        padding-top: 56px;
+        background-color: #121212; /* Set the background color to dark */
+        color: #fff; /* Set the text color to white */
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+
+      .navbar {
+        background-color: #1e1e1e; /* Set the navbar background color to dark */
+      }
+
+      .navbar-dark .navbar-toggler-icon {
+        background-color: #fff; /* Set the navbar toggler color to white */
+      }
+
+      .navbar-brand:hover {
+        color: #bbb; /* Change the text color on hover */
+      }
+
+      .card {
+        background-color: #1e1e1e; /* Set the card background color to dark */
+        color: #fff; /* Set the text color inside the card to white */
+        border: 1px solid #555; /* Set the border color to a darker tone */
+        text-align: center;
+        padding: 20px;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      }
+
+      .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      .card-text {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .card-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+      }
+
+      .table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+      }
+
+      .table th,
+      .table td {
+        border: none;
+        padding: 12px;
+        text-align: center;
+      }
+
+      .table th {
+        background-color: #343a40;
+        color: #fff;
+      }
+
+      .table tbody tr:nth-child(even) {
+        background-color: #1e1e1e;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .page-link {
+        background-color: #343a40;
+        color: #fff;
+        border: 1px solid #343a40;
+        margin: 0 2px;
+      }
+
+      .page-link:hover {
+        background-color: #555;
+        color: #fff;
+      }
+
+      .page-item {
+        margin: 0 5px;
+        cursor: pointer;
+      }
+
+      .page-item.active .page-link {
+        background-color: #555;
+        border: 1px solid #555;
+      }
+
+      /* Add styles for the Add User and Delete buttons */
+      .action-btn {
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+
+      .add-user-btn {
+        background-color: #343a40; /* Dark theme color */
+        color: #fff;
+      }
+
+      .delete-user-btn {
+        background-color: #dc3545; /* Red color for delete button */
+        color: #fff;
+      }
+
+      .action-btn i {
+        margin-right: 8px;
+      }
+
+      .action-btn:hover {
+        background-color: #555; /* Darker shade on hover */
+        color: #fff;
+      }
+
+      .modelContent {
+        background-color: #1e1e1e;
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      /* Add animation to the modal */
+      .modal.fade .modal-dialog {
+        transform: scale(0.8);
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .modal.fade.show .modal-dialog {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      /* Add attractive styling to the modal */
+      .modal-content {
+        background-color: #1e1e1e;
+        color: #fff;
+        border: 2px solid #343a40;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      }
+
+      .modal-header {
+        background-color: #343a40;
+        color: #fff;
+        border-bottom: 1px solid #555;
+        padding: 15px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-footer {
+        background-color: #343a40;
+        border-top: 1px solid #555;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding: 15px;
+      }
+
+      /* Add animation to the cards */
+      .row .card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+      }
+
+      .row .card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">MSGme</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Settings</a>
+            </li>
+            <!-- Add more navigation items as needed -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-4">
+      <h2 class="text-center mb-4">User Dashboard</h2>
+      <div class="row justify-content-center">
+        <!-- Cards for User Information -->
+        <div class="col-lg-4 mb-4" id="displayNameCard">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Total Users</h5>
+              <p class="card-text" id="userCount">100</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4" id="emailCard">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Active Users</h5>
+              <p class="card-text" id="activeCount">10</p>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-between mb-3">
+          <div class="col-md-6">
+            <button
+              class="action-btn add-user-btn"
+              onclick="openAddUserModal()"
+            >
+              <i class="fas fa-plus"></i> Add User
+            </button>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <button
+              class="action-btn delete-user-btn"
+              onclick="openDeleteUserModal()"
+            >
+              <i class="fas fa-trash"></i> Delete User
+            </button>
+          </div>
+        </div>
+
+        <!-- Additional content goes here -->
+        <div class="row">
+          <div class="col-lg-12">
+            <h4 class="mb-3">User Table</h4>
+            <table class="table table-dark table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Display Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Active</th>
+                  <th scope="col">Last Updated</th>
+                  <th scope="col">Actions</th>
+                  <!-- Add more columns based on your user schema -->
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+                <!-- Example rows (Replace with actual user data) -->
+                <tr>
+                  <th scope="row">1</th>
+                  <td>User1</td>
+                  <td>user1@example.com</td>
+                  <td>Yes</td>
+                  <td>2022-01-31 12:34:56</td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td>User2</td>
+                  <td>user2@example.com</td>
+                  <td>No</td>
+                  <td>2022-02-01 09:45:00</td>
+                </tr>
+                <!-- Add more rows as needed -->
+              </tbody>
+            </table>
+            <div class="pagination" id="paginationContainer">
+              <!-- Styled Pagination -->
+              <nav aria-label="User Table Pagination">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item disabled">
+                    <a
+                      class="page-link"
+                      href="#"
+                      tabindex="-1"
+                      aria-disabled="true"
+                      >Previous</a
+                    >
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div
+              class="modal fade"
+              id="userDetailsModal"
+              tabindex="-1"
+              aria-labelledby="userDetailsModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="userDetailsModalLabel">
+                      User Details
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body" id="userDetailsModalBody">
+                    <!-- User details will be displayed here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function openAddUserModal() {
+        // Redirect to the add user page
+        window.location.href = "http://localhost:8000/admin/users/add";
+      }
+
+      function openDeleteUserModal() {
+        // Add your logic to open the modal for deleting a user
+        console.log("Opening Delete User Modal");
+      }
+    </script>
+    <script>
+      // ... (Previous script content) ...
+
+      // Function to update user table
+      function updateUserTable(users) {
+        var tableBody = document.getElementById("userTableBody");
+        if (tableBody) {
+          tableBody.innerHTML = ""; // Clear existing content
+          users.forEach(function (user) {
+            var row = tableBody.insertRow();
+            row.innerHTML = `<td>${user.userName}</td>
+                             <td>${user.email}</td>
+                             <input type="hidden" id="userId" value="${user._id}">
+                             <td><img src="${user.profilePicture.url}" alt="Profile" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                             <td>${user.status}</td>
+                             <td>${user.updatedOn}</td>
+                             <td><button onclick="handleDelete('${user._id}')">Delete</button><button onclick="handleSee('${user._id}')">see</button></td>`;
+          });
+        }
+      }
+
+      // Function to update pagination
+      function updatePagination(activeUsers) {
+        var paginationContainer = document.getElementById(
+          "paginationContainer"
+        );
+        if (paginationContainer) {
+          paginationContainer.innerHTML = ""; // Clear existing content
+          var totalPages = Math.ceil(activeUsers / 10); // Assuming 10 users per page
+          for (var i = 1; i <= totalPages; i++) {
+            var pageItem = document.createElement("span");
+            pageItem.classList.add("page-item");
+            pageItem.textContent = i;
+            pageItem.onclick = function () {
+              fetchDataAndUpdateTable(this.textContent);
+            };
+            paginationContainer.appendChild(pageItem);
+          }
+        }
+      }
+
+      // Function to handle delete button click
+      function handleDelete(userId) {
+        // Implement the logic to delete the user
+        console.log("Delete user with ID: " + userId);
+      }
+
+      // Function to make XMLHttpRequest
+      function makeRequest(url, method, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              callback(null, xhr.responseText);
+            } else {
+              callback({ message: "Something went wrong" });
+            }
+          }
+        };
+        xhr.send();
+      }
+      function updateCardContent(data) {
+        var cardtotal = document.getElementById("userCount");
+        var cardactive = document.getElementById("activeCount");
+        if (data) {
+          cardtotal.textContent = data.users.length;
+          cardactive.textContent = data.activeUsers;
+        }
+      }
+
+      // Function to fetch data and update cards and table
+      function fetchDataAndUpdateTable(pageNumber) {
+        var url = `http://localhost:8000/api/admin/users?pageNumber=${pageNumber}`;
+
+        makeRequest(url, "GET", function (error, response) {
+          if (!error) {
+            // Parse the JSON response
+            var data = JSON.parse(response);
+
+            // Update cards
+            updateCardContent(data);
+
+            // Update user table
+            updateUserTable(data.users);
+
+            // Update pagination
+            updatePagination(data.activeUsers);
+          } else {
+            // Show error toast on failure
+            showErrorToast();
+          }
+        });
+      }
+
+      // Initial data fetch and table update
+      fetchDataAndUpdateTable(1);
+
+      // Set interval to fetch and update data every 5 minutes (adjust as needed)
+      setInterval(function () {
+        fetchDataAndUpdateTable(1);
+      }, 300000); // 5 minutes in milliseconds
+
+      // Function to handle "See" button click
+      function handleSee(userId) {
+        var url = `http://localhost:8000/api/admin/user?userId=${userId}`;
+
+        makeRequest(url, "GET", function (error, response) {
+          if (!error) {
+            var userData = JSON.parse(response);
+
+            // Display user details in the modal
+            displayUserDetails(userData.user);
+          } else {
+            // Show error toast on failure
+            showErrorToast();
+          }
+        });
+      }
+
+      // Function to display user details in the modal
+      function displayUserDetails(user) {
+        var modalBody = document.getElementById("userDetailsModalBody");
+        if (modalBody) {
+          console.log(user.profilePicture);
+          modalBody.innerHTML = `
+        <p><img src="${user.profilePicture.url}" alt="Profile" style="width: 100px; height: 100px; object-fit: cover;"></p>
+        <p class="modelContent"><strong>User ID:</strong> ${user._id}</p>
+        <p class="modelContent"><strong>User Name:</strong> ${user.userName}</p>
+        <p class="modelContent"><strong>Email:</strong> ${user.email}</p>
+                <p class="modelContent"><strong>chatRooms:</strong> ${user.chatRooms.length}</p>
+
+        <p class="modelContent"><strong>Display Name:</strong> ${user.displayName}</p>
+        <p class="modelContent"><strong>Status:</strong> ${user.status}</p>
+        <!-- Add more details as needed -->
+      `;
+
+          // Open the modal
+          var userDetailsModal = new bootstrap.Modal(
+            document.getElementById("userDetailsModal")
+          );
+          userDetailsModal.show();
+        }
+      }
+      function animateCardsOnScroll() {
+        var cards = document.querySelectorAll(".card");
+        var windowHeight = window.innerHeight;
+
+        function checkPosition() {
+          for (var i = 0; i < cards.length; i++) {
+            var positionFromTop = cards[i].getBoundingClientRect().top;
+
+            if (positionFromTop - windowHeight <= 0) {
+              cards[i].classList.add("visible");
+            }
+          }
+        }
+
+        // Initial check
+        checkPosition();
+
+        // Add event listener for scroll
+        window.addEventListener("scroll", checkPosition);
+      }
+
+      // Open the modal with animation
+      function openModalWithAnimation() {
+        var userDetailsModal = new bootstrap.Modal(
+          document.getElementById("userDetailsModal"),
+          {
+            backdrop: "static", // Prevent closing on backdrop click
+            keyboard: false, // Prevent closing with keyboard ESC key
+          }
+        );
+
+        userDetailsModal.show();
+      }
+
+      // ... (Previous script content) ...
+
+      // Call functions
+      animateCardsOnScroll();
+    </script>
+    <!-- Bootstrap JS (Optional: Add your custom scripts here) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
