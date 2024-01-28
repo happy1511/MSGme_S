@@ -1,4 +1,4 @@
-const { getUser } = require("../db/access/get");
+const { getUser, getAllUsers } = require("../db/access/get");
 const { updateUser } = require("../db/access/update");
 const Response = require("../helper/response");
 
@@ -23,4 +23,22 @@ const getProfile = async (req, res) => {
   }
 };
 
-module.exports = { setStatus, getProfile };
+const searchUser = async (req, res) => {
+  try {
+    console.log("re");
+    const search = req.query.search ? req.query.search : "";
+    const users = await getAllUsers({
+      $or: [
+        { username: { $regex: search, $options: "i" } }, // Case-insensitive search for username
+        { displayName: { $regex: search, $options: "i" } }, // Case-insensitive search for displayName
+      ],
+    });
+
+    new Response(res).success({ users });
+  } catch (err) {
+    console.log(err);
+    new Response(res).error(err.message);
+  }
+};
+
+module.exports = { setStatus, getProfile, searchUser };

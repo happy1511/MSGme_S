@@ -75,6 +75,7 @@ app.get("/admin/users/add", (req, res) => {
 const adminRouter = require("./router/admin");
 
 app.use("/api/admin", adminRouter);
+const { searchUser } = require("./controller/user");
 
 app.use("/api/user", authorizeRequest, userRouter);
 
