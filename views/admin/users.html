@@ -381,7 +381,7 @@
     <script>
       function openAddUserModal() {
         // Redirect to the add user page
-        window.location.href = `<%= process.env.MY_ENV_VARIABLE %>/admin/users/add`;
+        window.location.href = `/admin/users/add`;
       }
 
       function openDeleteUserModal() {
@@ -462,7 +462,7 @@
 
       // Function to fetch data and update cards and table
       function fetchDataAndUpdateTable(pageNumber) {
-        var url = `<%= process.env.MY_ENV_VARIABLE %>/api/admin/users?pageNumber=${pageNumber}`;
+        var url = `/api/admin/users?pageNumber=${pageNumber}`;
 
         makeRequest(url, "GET", function (error, response) {
           if (!error) {
@@ -494,7 +494,7 @@
 
       // Function to handle "See" button click
       function handleSee(userId) {
-        var url = `<%= process.env.MY_ENV_VARIABLE %>/api/admin/user?userId=${userId}`;
+        var url = `/api/admin/user?userId=${userId}`;
 
         makeRequest(url, "GET", function (error, response) {
           if (!error) {
